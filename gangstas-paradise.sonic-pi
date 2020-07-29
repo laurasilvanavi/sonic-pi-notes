@@ -1,0 +1,19 @@
+intro_notes = [:b4, :b4, :b4, :b4, :b4, :b4, :b4, :b4, :bb4, :bb4, :bb4, :bb4, :b4, :b4, :fs4, :fs4]
+intro_times = [0.5, 0.25]
+bass_notes = [:g3, :a3, :g3, :fs3, :fs3, :d3, :cs3, :b2];
+bass_times = [1.5, 0.75, 0.75, 1.25, 0.25, 1, 0.25, 0.25];
+leading_notes = [:b3, :d4, :cs4, :b3, :bb3, :b3, :fs3];
+leading_times = [1.5, 0.75, 0.5, 0.25, 1.5, 0.75, 0.75];
+recurring_notes = [:g3, :fs3, :e3, :d3, :cs3, :d3, :cs3, :b2];
+recurring_times = [1.25, 0.25, 1.25, 0.25, 1, 0.25, 0.25, 1.5];
+
+define :play_chords_cycle do |sleep_time, release_time|
+  play [:g3, :b3, :d4, :g4], release: release_time
+  sleep sleep_time
+  play [:e3, :g3, :b3, :e4], release: release_time
+  sleep sleep_time
+  play [:cs3, :e3, :g3, :cs4], release: release_time
+  sleep sleep_time
+  play [:b2, :d3, :fs3, :b3], release: release_time
+  sleep sleep_time
+end
