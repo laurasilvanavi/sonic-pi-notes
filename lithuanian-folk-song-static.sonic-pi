@@ -1,0 +1,91 @@
+##| Arrangement of Lithuanian folk song "Saulele"
+
+iterator = 0;
+low_volume = 1;
+high_volume = 3;
+leading_notes = [:c4, :b3, :a3, :c4, :b3, :a3];
+leading_times = [0.5, 0.25, 0.25, 0.5, 0.25, 0.25];
+recurring_notes = [:c4, :c4, :d4, :b3, :c4, :b3, :a3];
+recurring_times = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.5];
+secondary_notes = [:c4, :c4, :b3, :a3, :c4, :c4, :b3, :a3];
+secondary_times = [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25];
+
+define :play_chords_cycle do |sleep_time, release_time|
+  play [:e3, :a3, :c4], release: release_time
+  sleep sleep_time
+  play [:e3, :g3, :b3], release: release_time
+  sleep sleep_time
+  play [:d3, :f3, :a3], release: release_time
+  sleep sleep_time
+  play [:d3, :g3, :b3], release: release_time
+  sleep sleep_time
+end
+
+live_loop :melody do
+  use_synth :hollow
+  use_synth_defaults amp: low_volume
+  
+  play_pattern_timed leading_notes, leading_times
+  play_pattern_timed recurring_notes, recurring_times
+  play_pattern_timed secondary_notes, secondary_times
+  play_pattern_timed recurring_notes, recurring_times
+  iterator += 1;
+end
+
+live_loop :melody_high do
+  use_octave 1
+  use_synth :pluck
+  use_synth_defaults amp: 1
+  
+  if iterator > 1 && iterator < 12
+    if iterator < 8
+      play_pattern_timed leading_notes, leading_times
+      play_pattern_timed recurring_notes, recurring_times
+      play_pattern_timed secondary_notes, secondary_times
+    end
+    play_pattern_timed recurring_notes, recurring_times
+  else
+    sleep 4
+  end
+end
+
+live_loop :chords do
+  use_synth :dsaw
+  if iterator > 3
+    if iterator > 7 && iterator < 12
+      with_fx :slicer do
+        use_synth_defaults amp: 1, cutoff: 80
+        play_chords_cycle 2, 3
+      end
+    else
+      if iterator > 11
+        use_octave 1
+      end
+      use_synth_defaults amp: low_volume, cutoff: 70
+      play_chords_cycle 2, 3
+    end
+  else
+    sleep 4
+  end
+end
+
+live_loop :drums do
+  if iterator > 5
+    if iterator > 11
+      sample :loop_safari, amp: high_volume
+    end
+    sample :drum_bass_hard, amp: low_volume
+    sleep 3.75
+    sample :drum_bass_hard, amp: low_volume
+    sleep 0.25
+    sample :drum_bass_hard, amp: low_volume
+    if iterator > 12 && iterator < 16
+      high_volume -= 1;
+      low_volume += 0.25
+    end
+    if iterator > 16
+      low_volume = 0;
+    end
+  end
+  sleep 4
+end
